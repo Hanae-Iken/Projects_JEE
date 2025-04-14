@@ -1,57 +1,53 @@
 package ma.ensat.formservlet;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
 
-@WebServlet("/process-form")
+@WebServlet("/show-params")
 public class FormServlet extends HttpServlet {
 
-    // Méthode GET (pour les accès directs)
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        response.setContentType("text/html; charset=UTF-8");
+    public void doPost(HttpServletRequest request,
+                       HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
-        out.println("<!DOCTYPE html>");
-        out.println("<html><head><title>Accès Direct</title></head>");
-        out.println("<body><h1>Utilisez le formulaire SVP</h1>");
-        out.println("<a href='formulaire.html'>Retour au formulaire</a>");
-        out.println("</body></html>");
+        String title = "Paramètres reçus";
+        String doctype = "<!DOCTYPE html>";
+
+        out.println(doctype +
+                "<html>\n<head><title>" + title + "</title></head>\n" +
+                "<body>\n<h1>" + title + "</h1>\n" +
+                "<table border=\"1\">\n" +
+                "<tr><th>Nom Paramètre</th><th>Valeur(s)</th></tr>");
+
+        Enumeration<String> paramNames = request.getParameterNames();
+
+        while(paramNames.hasMoreElements()) {
+            String paramName = paramNames.nextElement();
+            out.println("<tr><td>" + paramName + "</td>");
+            String[] paramValues = request.getParameterValues(paramName);
+            out.println("<td>");
+            for(int i=0; i<paramValues.length; i++) {
+                if(i>0) out.println(", ");
+                out.println(paramValues[i]);
+            }
+            out.println("</td></tr>");
+        }
+        out.println("</table>\n</body></html>");
     }
 
-    // Méthode POST (pour le traitement du formulaire)
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        response.setContentType("text/html; charset=UTF-8");
-        PrintWriter out = response.getWriter();
-
-        // Récupération des paramètres
-        String nom = request.getParameter("nom");
-        String age = request.getParameter("age");
-        String email = request.getParameter("email");
-
-        out.println("<!DOCTYPE html>");
-        out.println("<html><head><title>Résultat</title></head>");
-        out.println("<body><h1>Données reçues (POST) :</h1>");
-        out.println("<ul>");
-        out.println("<li>Nom : " + escapeHtml(nom) + "</li>");
-        out.println("<li>Âge : " + escapeHtml(age) + "</li>");
-        out.println("<li>Email : " + escapeHtml(email) + "</li>");
-        out.println("</ul>");
-        out.println("</body></html>");
-    }
-
-    // Méthode de sécurité pour éviter les injections XSS
-    private String escapeHtml(String input) {
-        if (input == null) return "Non renseigné";
-        return input.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;");
+    // Pour permettre aussi l'accès en GET (comme dans le PPT)
+    public void doGet(HttpServletRequest request,
+                      HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response); // Réutilise la même logique
     }
 }
