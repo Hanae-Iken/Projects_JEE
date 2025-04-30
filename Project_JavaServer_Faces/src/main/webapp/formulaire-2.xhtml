@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: Lenovo PC
+  Date: 4/30/2025
+  Time: 4:05 PM
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <title>formulaire 2</title>
+</h:head>
+<h:body>
+
+    <h1>formulaire 2</h1>
+
+    <h:form>
+        <h:outputLabel value="Entrez un nombre" for="nombre"/>
+        <h:inputText id="nombre" value="#{beanEx1.nombre}"/>
+        <h:commandButton value="Valider" action="affichage-2?faces-redirect=true;includeViewParams=true"/>
+    </h:form>
+</h:body>
+
+</html>

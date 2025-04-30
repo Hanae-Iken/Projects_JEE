@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: Lenovo PC
+  Date: 4/30/2025
+  Time: 4:05 PM
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <title>Formulaire d'Enregistrement</title>
+</h:head>
+
+<h:body>
+    <h:form>
+        <h4>
+            Formulaire JSF d'inscription.
+        </h4>
+        <table>
+            <tr>
+                <td>Prénom:</td>
+                <td>
+                    <h:inputText value="#{userBean.prenom}" required="true"  id="prenom"
+                                 requiredMessage="le prénom est obligatoire" />
+                    <h:message for="prenom"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Nom:</td>
+                <td>
+                    <h:inputText value="#{userBean.nom}" required="true"  id="nom"
+                                 requiredMessage="le nom est obligatoire"/>
+                    <h:message for="nom"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Sexe:</td>
+                <td>
+                    <h:selectOneRadio value="#{userBean.genre}" required="true" id="genre"
+                                      requiredMessage="Veuillez spécifier homme ou femme" >
+                        <f:selectItem itemLabel="Homme" itemValue="homme"/>
+                        <f:selectItem itemLabel="Femme" itemValue="femme"/>
+                    </h:selectOneRadio>
+                    <h:message for="genre"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Date de naissance:</td>
+                <td>
+                    <h:inputText value="#{userBean.datenaissance}" id="datenaissance" required="true"
+                                 requiredMessage="la date est obligatoire">
+                        <f:convertDateTime pattern="MM-dd-yyyy"/>
+                    </h:inputText>
+                    (mm-dd-yyyy)
+                    <h:message for="datenaissance" style="color:red"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>
+                    <h:inputText value="#{userBean.email}" required="true"
+                                 validator="#{userBean.validateEmail}" id="email"
+                                 requiredMessage="l'e-mail est obligatoire"
+                                 validatorMessage="Ce n'est pas un format e-mail"/>
+                    <h:message for="email"/>
+                </td>
+            </tr>
+        </table>
+        <p><h:commandButton value="Inscription" action="confirm-ex2" /></p>
+    </h:form>
+</h:body>
+
+</html>

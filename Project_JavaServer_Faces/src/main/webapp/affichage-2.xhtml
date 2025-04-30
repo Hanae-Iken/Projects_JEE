@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: Lenovo PC
+  Date: 4/30/2025
+  Time: 4:02 PM
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<f:metadata>
+    <f:viewParam name="nb" value="#{beanEx1.nombre}"/>
+</f:metadata>
+
+<h:head>
+    <title>affichage 2</title>
+</h:head>
+<h:body>
+
+    <h1>affichage 2</h1>
+
+    Les nombres : <br/>
+    <ui:repeat value="#{beanEx1.nombresSuivants}" var="n" varStatus="status">
+        #{n + 1}#{! status.last ? ', ' : ''}
+    </ui:repeat>
+    <h:form>
+        <h:commandLink action="formulaire-2?faces-redirect=true" value="Saisir un autre nombre"/>
+
+    </h:form>
+</h:body>
+
+</html>
