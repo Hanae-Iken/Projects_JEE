@@ -1,10 +1,9 @@
 package ma.ensat.projet_hibernat_jsf.bean;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;  // Changement de ViewScoped à SessionScoped
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import ma.ensat.projet_hibernat_jsf.entity.Auto;
@@ -15,7 +14,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Named
-@ViewScoped  // Changement de SessionScoped à ViewScoped
+@SessionScoped  // Utiliser SessionScoped au lieu de ViewScoped pour assurer la persistance
 public class AutoBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -43,19 +42,32 @@ public class AutoBean implements Serializable {
         try {
             // Récupérer l'utilisateur sélectionné
             User selectedUser = userService.getUserById(selectedUserId);
+
             if (selectedUser != null) {
+                // Associer l'utilisateur à l'automobile
                 auto.setUser(selectedUser);
+
                 if (editMode) {
                     autoService.updateAuto(auto);
                     FacesContext.getCurrentInstance().addMessage(null,
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Automobile mise à jour avec succès", null));
                 } else {
+                    // Sauvegarde de la nouvelle automobile
                     autoService.saveAuto(auto);
                     FacesContext.getCurrentInstance().addMessage(null,
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Automobile ajoutée avec succès", null));
                 }
-                resetAuto();
+
+                // Recharger les automobiles et les utilisateurs pour mettre à jour l'affichage
                 loadAutos();
+
+                // Réinitialiser le formulaire
+                resetAuto();
+
+                // Rafraîchir également la liste des utilisateurs
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+
+                return null;
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Veuillez sélectionner un utilisateur valide", null));

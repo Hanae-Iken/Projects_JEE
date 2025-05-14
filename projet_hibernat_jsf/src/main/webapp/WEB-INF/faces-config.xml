@@ -4,8 +4,25 @@
               xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
                                   https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd" >
 
+<!--    <navigation-rule>-->
+<!--    <from-view-id>index.xhtml</from-view-id>-->
+<!--    </navigation-rule>-->
     <navigation-rule>
-    <from-view-id>index.xhtml</from-view-id>
+        <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>modification</from-outcome>
+            <to-view-id>/modification.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/modification.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>index</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
 
 </faces-config>

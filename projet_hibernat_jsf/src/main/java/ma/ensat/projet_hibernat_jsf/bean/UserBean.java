@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Named
-@ViewScoped  // Changement de SessionScoped à ViewScoped pour éviter les problèmes de synchronisation
+@SessionScoped
 public class UserBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -35,48 +35,45 @@ public class UserBean implements Serializable {
     }
 
     public String saveUser() {
-        try {
-            if (editing) {
-                userService.updateUser(selectedUser);
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur mis à jour avec succès", null));
-            } else {
-                userService.saveUser(user);
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur ajouté avec succès", null));
-            }
-            resetUser();
-            loadUsers();
-        } catch (Exception e) {
+        if (selectedUser != null) {
+            userService.updateUser(selectedUser);
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur: " + e.getMessage(), null));
-            e.printStackTrace();
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur mis à jour avec succès", null));
+
+            // Vérifier si on doit rediriger vers index
+            String redirect = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("redirect");
+            if (redirect != null && redirect.equals("true")) {
+                resetUser();
+                loadUsers();
+                return "index?faces-redirect=true";
+            }
+        } else {
+            userService.saveUser(user);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur ajouté avec succès", null));
         }
+
+        resetUser();
+        loadUsers();
         return null;
     }
 
     public String prepareEdit(User user) {
         this.selectedUser = user;
         this.editing = true;
-        return null;
+        return "modification?faces-redirect=true";
     }
 
     public String cancelEdit() {
         resetUser();
-        return null;
+        return "index?faces-redirect=true";
     }
 
     public String deleteUser(int userId) {
-        try {
-            userService.deleteUser(userId);
-            loadUsers();
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur supprimé avec succès", null));
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur: " + e.getMessage(), null));
-            e.printStackTrace();
-        }
+        userService.deleteUser(userId);
+        loadUsers();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur supprimé avec succès", null));
         return null;
     }
 

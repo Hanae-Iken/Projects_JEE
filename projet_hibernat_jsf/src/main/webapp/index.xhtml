@@ -17,6 +17,8 @@
         th, td { padding: 10px; text-align: left; }
         th { background-color: #f2f2f2; }
         .section-title { margin-top: 30px; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #ddd; }
+        .messages { color: green; margin-bottom: 10px; }
+        .error-messages { color: red; margin-bottom: 10px; }
     </style>
 </h:head>
 
@@ -25,13 +27,13 @@
         <h1>Gestion des Utilisateurs et des Automobiles</h1>
 
         <!-- Messages globaux -->
-        <h:messages globalOnly="true" styleClass="messages" />
+        <h:messages globalOnly="true" styleClass="messages" errorClass="error-messages" />
 
         <!-- Section utilisateurs -->
         <h2 class="section-title">Liste des Utilisateurs</h2>
 
         <!-- Formulaire d'ajout d'utilisateur -->
-        <h:form id="userForm" rendered="#{!userBean.editing}">
+        <h:form id="userForm">
             <div class="form-group">
                 <h:outputLabel for="name">Nom:</h:outputLabel>
                 <h:inputText id="name" value="#{userBean.user.name}" required="true" />
@@ -41,26 +43,7 @@
                 <h:inputText id="age" value="#{userBean.user.age}" required="true" />
             </div>
             <h:commandButton value="Ajouter Utilisateur" action="#{userBean.saveUser}" styleClass="btn">
-                <f:ajax execute="@form" render="userForm userTable editForm" />
-            </h:commandButton>
-        </h:form>
-
-        <!-- Formulaire d'édition d'utilisateur -->
-        <h:form id="editForm" rendered="#{userBean.editing}">
-            <h3>Modifier Utilisateur</h3>
-            <div class="form-group">
-                <h:outputLabel for="editName">Nom:</h:outputLabel>
-                <h:inputText id="editName" value="#{userBean.selectedUser.name}" required="true" />
-            </div>
-            <div class="form-group">
-                <h:outputLabel for="editAge">Âge:</h:outputLabel>
-                <h:inputText id="editAge" value="#{userBean.selectedUser.age}" required="true" />
-            </div>
-            <h:commandButton value="Enregistrer" action="#{userBean.saveUser}" styleClass="btn">
-                <f:ajax execute="@form" render="userForm userTable editForm" />
-            </h:commandButton>
-            <h:commandButton value="Annuler" action="#{userBean.cancelEdit}" styleClass="btn" immediate="true">
-                <f:ajax render="userForm userTable editForm" />
+                <f:ajax execute="@form" render="userForm userTable messages" />
             </h:commandButton>
         </h:form>
 
@@ -87,9 +70,7 @@
                 </h:column>
                 <h:column>
                     <f:facet name="header">Actions</f:facet>
-                    <h:commandButton value="Modifier" styleClass="btn" action="#{userBean.prepareEdit(user)}">
-                        <f:ajax render="userForm userTable editForm" />
-                    </h:commandButton>
+                    <h:commandButton value="Modifier" styleClass="btn" action="#{userBean.prepareEdit(user)}" />
                     <h:commandButton value="Supprimer" styleClass="btn" action="#{userBean.deleteUser(user.id)}">
                         <f:ajax render="userTable autoForm" />
                     </h:commandButton>
@@ -118,7 +99,7 @@
                 </h:selectOneMenu>
             </div>
             <h:commandButton value="Ajouter Automobile" action="#{autoBean.saveAuto}" styleClass="btn">
-                <f:ajax execute="@form" render="autoForm userTable" />
+                <f:ajax execute="@form" render="autoForm userTable messages" />
             </h:commandButton>
         </h:form>
     </div>
