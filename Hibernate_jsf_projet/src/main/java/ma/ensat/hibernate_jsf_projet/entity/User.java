@@ -1,4 +1,4 @@
-package ma.ensat.hibernate_jsf.entity;
+package ma.ensat.hibernate_jsf_projet.entity;
 
 import jakarta.persistence.*;
 

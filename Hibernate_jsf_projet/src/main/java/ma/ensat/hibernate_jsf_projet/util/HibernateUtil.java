@@ -1,8 +1,8 @@
-package ma.ensat.hibernate_jsf.util;
+package ma.ensat.hibernate_jsf_projet.util;
 
 
-import ma.ensat.hibernate_jsf.entity.Auto;
-import ma.ensat.hibernate_jsf.entity.User;
+import ma.ensat.hibernate_jsf_projet.entity.Auto;
+import ma.ensat.hibernate_jsf_projet.entity.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;

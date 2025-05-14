@@ -1,13 +1,13 @@
-package ma.ensat.hibernate_jsf.bean;
+package ma.ensat.hibernate_jsf_projet.bean;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import ma.ensat.hibernate_jsf.entity.Auto;
-import ma.ensat.hibernate_jsf.entity.User;
-import ma.ensat.hibernate_jsf.service.AutoService;
-import ma.ensat.hibernate_jsf.service.UserService;
+import ma.ensat.hibernate_jsf_projet.entity.Auto;
+import ma.ensat.hibernate_jsf_projet.entity.User;
+import ma.ensat.hibernate_jsf_projet.service.AutoService;
+import ma.ensat.hibernate_jsf_projet.service.UserService;
 
 import java.io.Serializable;
 import java.util.List;

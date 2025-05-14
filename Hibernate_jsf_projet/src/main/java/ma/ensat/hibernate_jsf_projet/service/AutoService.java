@@ -1,9 +1,9 @@
-package ma.ensat.hibernate_jsf.service;
+package ma.ensat.hibernate_jsf_projet.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import ma.ensat.hibernate_jsf.entity.Auto;
-import ma.ensat.hibernate_jsf.entity.User;
-import ma.ensat.hibernate_jsf.util.HibernateUtil;
+import ma.ensat.hibernate_jsf_projet.entity.Auto;
+import ma.ensat.hibernate_jsf_projet.entity.User;
+import ma.ensat.hibernate_jsf_projet.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
