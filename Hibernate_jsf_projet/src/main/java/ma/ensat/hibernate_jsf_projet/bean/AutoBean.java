@@ -8,7 +8,6 @@ import ma.ensat.hibernate_jsf_projet.entity.Auto;
 import ma.ensat.hibernate_jsf_projet.entity.User;
 import ma.ensat.hibernate_jsf_projet.service.AutoService;
 import ma.ensat.hibernate_jsf_projet.service.UserService;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class AutoBean implements Serializable {
     @Inject
     private UserService userService;
 
-    private List<Auto> autoList;
+    private List<Auto> autos; // Renommé autoList en autos
     private Auto auto = new Auto();
     private int selectedUserId;
     private boolean editMode = false;
@@ -34,7 +33,7 @@ public class AutoBean implements Serializable {
     }
 
     public void loadAutos() {
-        autoList = autoService.getAllAutos();
+        autos = autoService.getAllAutos();
     }
 
     public String saveAuto() {
@@ -42,13 +41,11 @@ public class AutoBean implements Serializable {
         User selectedUser = userService.getUserById(selectedUserId);
         if (selectedUser != null) {
             auto.setUser(selectedUser);
-
             if (editMode) {
                 autoService.updateAuto(auto);
             } else {
                 autoService.saveAuto(auto);
             }
-
             resetAuto();
             loadAutos();
         }
@@ -75,12 +72,12 @@ public class AutoBean implements Serializable {
     }
 
     // Getters et Setters
-    public List<Auto> getAutoList() {
-        return autoList;
+    public List<Auto> getAutos() {
+        return autos;
     }
 
-    public void setAutoList(List<Auto> autoList) {
-        this.autoList = autoList;
+    public void setAutos(List<Auto> autos) {
+        this.autos = autos;
     }
 
     public Auto getAuto() {
@@ -107,7 +104,7 @@ public class AutoBean implements Serializable {
         this.editMode = editMode;
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getUsersList() {
         return userService.getAllUsers();
     }
 }

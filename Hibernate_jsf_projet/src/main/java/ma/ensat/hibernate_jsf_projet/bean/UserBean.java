@@ -8,7 +8,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import ma.ensat.hibernate_jsf_projet.entity.User;
 import ma.ensat.hibernate_jsf_projet.service.UserService;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,9 +19,10 @@ public class UserBean implements Serializable {
     @Inject
     private UserService userService;
 
-    private List<User> userList;
+    private List<User> users; // Changé de userList à users pour correspondre au fichier XHTML
     private User user = new User();
-    private boolean editMode = false;
+    private User selectedUser; // Pour stocker l'utilisateur en cours d'édition
+    private boolean editing = false; // Changé de editMode à editing pour correspondre au fichier XHTML
 
     @PostConstruct
     public void init() {
@@ -30,44 +30,56 @@ public class UserBean implements Serializable {
     }
 
     public void loadUsers() {
-        userList = userService.getAllUsers();
+        users = userService.getAllUsers();
     }
 
     public String saveUser() {
-        if (editMode) {
-            userService.updateUser(user);
+        if (editing) {
+            userService.updateUser(selectedUser);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur mis à jour avec succès", null));
         } else {
             userService.saveUser(user);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur ajouté avec succès", null));
         }
         resetUser();
         loadUsers();
         return null;
     }
 
-    public String editUser(User user) {
-        this.user = user;
-        editMode = true;
+    public String prepareEdit(User user) {
+        this.selectedUser = user;
+        this.editing = true;
+        return null;
+    }
+
+    public String cancelEdit() {
+        resetUser();
         return null;
     }
 
     public String deleteUser(int userId) {
         userService.deleteUser(userId);
         loadUsers();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur supprimé avec succès", null));
         return null;
     }
 
     public void resetUser() {
         this.user = new User();
-        editMode = false;
+        this.selectedUser = null;
+        this.editing = false;
     }
 
     // Getters et Setters
-    public List<User> getUserList() {
-        return userList;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public User getUser() {
@@ -78,11 +90,19 @@ public class UserBean implements Serializable {
         this.user = user;
     }
 
-    public boolean isEditMode() {
-        return editMode;
+    public User getSelectedUser() {
+        return selectedUser;
     }
 
-    public void setEditMode(boolean editMode) {
-        this.editMode = editMode;
+    public void setSelectedUser(User selectedUser) {
+        this.selectedUser = selectedUser;
+    }
+
+    public boolean isEditing() {
+        return editing;
+    }
+
+    public void setEditing(boolean editing) {
+        this.editing = editing;
     }
 }
