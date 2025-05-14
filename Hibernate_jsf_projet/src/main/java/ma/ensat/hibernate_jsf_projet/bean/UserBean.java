@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import ma.ensat.hibernate_jsf_projet.entity.User;
@@ -12,17 +13,17 @@ import java.io.Serializable;
 import java.util.List;
 
 @Named
-@SessionScoped
+@ViewScoped  // Changement de SessionScoped à ViewScoped pour éviter les problèmes de synchronisation
 public class UserBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject
     private UserService userService;
 
-    private List<User> users; // Changé de userList à users pour correspondre au fichier XHTML
+    private List<User> users;
     private User user = new User();
-    private User selectedUser; // Pour stocker l'utilisateur en cours d'édition
-    private boolean editing = false; // Changé de editMode à editing pour correspondre au fichier XHTML
+    private User selectedUser;
+    private boolean editing = false;
 
     @PostConstruct
     public void init() {
@@ -34,17 +35,23 @@ public class UserBean implements Serializable {
     }
 
     public String saveUser() {
-        if (editing) {
-            userService.updateUser(selectedUser);
+        try {
+            if (editing) {
+                userService.updateUser(selectedUser);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur mis à jour avec succès", null));
+            } else {
+                userService.saveUser(user);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur ajouté avec succès", null));
+            }
+            resetUser();
+            loadUsers();
+        } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur mis à jour avec succès", null));
-        } else {
-            userService.saveUser(user);
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur ajouté avec succès", null));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur: " + e.getMessage(), null));
+            e.printStackTrace();
         }
-        resetUser();
-        loadUsers();
         return null;
     }
 
@@ -60,10 +67,16 @@ public class UserBean implements Serializable {
     }
 
     public String deleteUser(int userId) {
-        userService.deleteUser(userId);
-        loadUsers();
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur supprimé avec succès", null));
+        try {
+            userService.deleteUser(userId);
+            loadUsers();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Utilisateur supprimé avec succès", null));
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur: " + e.getMessage(), null));
+            e.printStackTrace();
+        }
         return null;
     }
 

@@ -2,6 +2,9 @@ package ma.ensat.hibernate_jsf_projet.bean;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import ma.ensat.hibernate_jsf_projet.entity.Auto;
@@ -12,7 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Named
-@SessionScoped
+@ViewScoped  // Changement de SessionScoped à ViewScoped
 public class AutoBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -22,7 +25,7 @@ public class AutoBean implements Serializable {
     @Inject
     private UserService userService;
 
-    private List<Auto> autos; // Renommé autoList en autos
+    private List<Auto> autos;
     private Auto auto = new Auto();
     private int selectedUserId;
     private boolean editMode = false;
@@ -37,17 +40,30 @@ public class AutoBean implements Serializable {
     }
 
     public String saveAuto() {
-        // Récupérer l'utilisateur sélectionné
-        User selectedUser = userService.getUserById(selectedUserId);
-        if (selectedUser != null) {
-            auto.setUser(selectedUser);
-            if (editMode) {
-                autoService.updateAuto(auto);
+        try {
+            // Récupérer l'utilisateur sélectionné
+            User selectedUser = userService.getUserById(selectedUserId);
+            if (selectedUser != null) {
+                auto.setUser(selectedUser);
+                if (editMode) {
+                    autoService.updateAuto(auto);
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Automobile mise à jour avec succès", null));
+                } else {
+                    autoService.saveAuto(auto);
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Automobile ajoutée avec succès", null));
+                }
+                resetAuto();
+                loadAutos();
             } else {
-                autoService.saveAuto(auto);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Veuillez sélectionner un utilisateur valide", null));
             }
-            resetAuto();
-            loadAutos();
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur: " + e.getMessage(), null));
+            e.printStackTrace();
         }
         return null;
     }
@@ -60,8 +76,16 @@ public class AutoBean implements Serializable {
     }
 
     public String deleteAuto(int autoId) {
-        autoService.deleteAuto(autoId);
-        loadAutos();
+        try {
+            autoService.deleteAuto(autoId);
+            loadAutos();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Automobile supprimée avec succès", null));
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur: " + e.getMessage(), null));
+            e.printStackTrace();
+        }
         return null;
     }
 

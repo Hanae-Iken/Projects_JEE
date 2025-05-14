@@ -29,6 +29,7 @@ public class HibernateUtil {
 
                 // Création de la SessionFactory
                 sessionFactory = metadata.getSessionFactoryBuilder().build();
+
             } catch (Exception e) {
                 e.printStackTrace();
                 if (registry != null) {

@@ -70,11 +70,12 @@ public class UserService {
         }
     }
 
-    // Récupérer tous les utilisateurs
+    // Récupérer tous les utilisateurs avec leurs autos (chargement EAGER)
     @SuppressWarnings("unchecked")
     public List<User> getAllUsers() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM User").getResultList();
+            // Solution 1: Chargement explicite avec JOIN FETCH pour résoudre le problème LazyInitializationException
+            return session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.autos").getResultList();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

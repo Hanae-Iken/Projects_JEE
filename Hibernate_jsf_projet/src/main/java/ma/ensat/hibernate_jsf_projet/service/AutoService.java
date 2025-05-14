@@ -75,7 +75,8 @@ public class AutoService {
     @SuppressWarnings("unchecked")
     public List<Auto> getAllAutos() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM Auto").getResultList();
+            // On utilise un join fetch pour éviter les problèmes de lazy loading
+            return session.createQuery("SELECT a FROM Auto a LEFT JOIN FETCH a.user").getResultList();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
